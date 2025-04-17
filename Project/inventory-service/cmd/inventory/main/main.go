@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"inventory-service/internal/infrastructure/db"
-	"inventory-service/internal/infrastructure/repository"
-	"inventory-service/internal/infrastructure/transport"
-	"inventory-service/internal/usecase"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/quemin2402/inventory-service/internal/infrastructure/db"
+	"github.com/quemin2402/inventory-service/internal/infrastructure/repository"
+	"github.com/quemin2402/inventory-service/internal/infrastructure/transport"
+	"github.com/quemin2402/inventory-service/internal/usecase"
 	"log"
 	"net"
 	"os"
@@ -18,19 +18,23 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	dsn := getenv("INV_DB_DSN", "postgres://postgres:postgres@localhost:5432/inventory_service?sslmode=disable")
+	dsn := getenv("INV_DB_DSN", "postgres://postgres:0000@localhost:5432/inventory_service?sslmode=disable")
 
-	// migrate
-	sqlDB, err := sql.Open("pgx", dsn)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := db.Migrate(sqlDB); err != nil {
-		log.Fatalf("migrate: %v", err)
+	pool, err := db.New(ctx, dsn)
+
+	if _, err := pool.Exec(ctx, `
+	  CREATE TABLE IF NOT EXISTS products(
+		id text PRIMARY KEY,
+		name text NOT NULL,
+		category text NOT NULL,
+		price numeric(12,2) NOT NULL,
+		stock integer NOT NULL
+	  );
+	`); err != nil {
+		log.Fatalf("init table: %v", err)
 	}
 
 	// pgx pool
-	pool, err := db.New(ctx, dsn)
 	if err != nil {
 		log.Fatal(err)
 	}

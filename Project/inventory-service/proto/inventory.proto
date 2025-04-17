@@ -1,6 +1,6 @@
 syntax = "proto3";
 package inventory.v1;
-option go_package = "github.com/quemin2402/Assignment2/Project/inventory-service/proto;inventorypb";
+option go_package = "github.com/quemin2402/inventory-service;inventorypb";
 
 import "google/protobuf/empty.proto";
 

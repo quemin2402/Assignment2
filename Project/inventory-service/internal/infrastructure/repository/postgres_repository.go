@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"inventory-service/internal/domain"
+	"github.com/quemin2402/inventory-service/internal/domain"
 )
 
 type repo struct{ db *pgxpool.Pool }

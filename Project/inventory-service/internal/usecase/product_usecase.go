@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
-	"inventory-service/internal/domain"
+	"github.com/quemin2402/inventory-service/internal/domain"
 )
 
 type ProductUC interface {
