@@ -1,0 +1,34 @@
+syntax = "proto3";
+package inventory.v1;
+option go_package = "github.com/quemin2402/Assignment2/Project/inventory-service/proto;inventorypb";
+
+import "google/protobuf/empty.proto";
+
+message Product {
+  string id       = 1;
+  string name     = 2;
+  string category = 3;
+  double price    = 4;
+  int32  stock    = 5;
+}
+
+message ProductID {
+  string id = 1;
+}
+
+message CreateProductRequest { Product product = 1; }
+message ProductResponse      { Product product = 1; }
+
+message UpdateProductRequest { Product product = 1; }
+
+message ListProductsRequest  {}
+message ListProductsResponse { repeated Product products = 1; }
+
+service InventoryService {
+  rpc CreateProduct (CreateProductRequest) returns (ProductResponse);
+  rpc GetProduct    (ProductID)            returns (ProductResponse);
+  rpc UpdateProduct (UpdateProductRequest) returns (ProductResponse);
+  rpc DeleteProduct (ProductID)            returns (google.protobuf.Empty);
+
+  rpc ListProducts  (ListProductsRequest)  returns (stream Product);
+}
