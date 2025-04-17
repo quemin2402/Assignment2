@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"Assignment2/Project/order-service/internal/domain"
 	"context"
 	"errors"
+	"github.com/quemin2402/order-service/internal/domain"
 )
 
 type OrderUC interface {

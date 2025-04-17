@@ -1,13 +1,12 @@
 package main
 
 import (
-	"Assignment2/Project/order-service/internal/infrastructure/db"
-	"Assignment2/Project/order-service/internal/infrastructure/repository"
-	"Assignment2/Project/order-service/internal/infrastructure/transport"
-	"Assignment2/Project/order-service/internal/usecase"
 	"context"
-	"database/sql"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/quemin2402/order-service/internal/infrastructure/db"
+	"github.com/quemin2402/order-service/internal/infrastructure/repository"
+	"github.com/quemin2402/order-service/internal/infrastructure/transport"
+	"github.com/quemin2402/order-service/internal/usecase"
 	"log"
 	"net"
 	"os"
@@ -18,13 +17,13 @@ import (
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
-	dsn := env("ORD_DB_DSN", "postgres://postgres:postgres@localhost:5432/order_service?sslmode=disable")
 
-	sqlDB, _ := sql.Open("pgx", dsn)
-	if err := db.Migrate(sqlDB); err != nil {
-		log.Fatalf("migrate: %v", err)
+	dsn := env("ORD_DB_DSN", "postgres://postgres:0000@localhost:5432/order_service?sslmode=disable")
+
+	pool, err := db.New(ctx, dsn)
+	if err != nil {
+		log.Fatal(err)
 	}
-	pool, _ := db.New(ctx, dsn)
 	defer pool.Close()
 
 	uc := usecase.New(repository.New(pool))
@@ -37,6 +36,7 @@ func main() {
 	grpcSrv.GracefulStop()
 	log.Println("shutdown")
 }
+
 func env(k, d string) string {
 	if v := os.Getenv(k); v != "" {
 		return v

@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"Assignment2/Project/order-service/internal/domain"
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/quemin2402/order-service/internal/domain"
 )
 
 type repo struct{ db *pgxpool.Pool }
