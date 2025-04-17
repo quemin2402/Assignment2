@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"user-service/internal/domain"
+	"github.com/quemin2402/user-service/internal/domain"
 )
 
 const createTable = `

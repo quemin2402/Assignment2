@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
+	"github.com/quemin2402/user-service/internal/infrastructure/db"
+	"github.com/quemin2402/user-service/internal/infrastructure/repository"
+	"github.com/quemin2402/user-service/internal/infrastructure/transport"
+	"github.com/quemin2402/user-service/internal/usecase"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"user-service/internal/infrastructure/db"
-	"user-service/internal/infrastructure/repository"
-	"user-service/internal/infrastructure/transport"
-	"user-service/internal/usecase"
 )
 
 func main() {

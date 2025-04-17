@@ -1,13 +1,14 @@
 package transport
 
 import (
+	"context"
 	"github.com/google/uuid"
+	userpb "github.com/quemin2402/user-service"
+	"github.com/quemin2402/user-service/internal/domain"
+	"github.com/quemin2402/user-service/internal/usecase"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	userpb "user-service"
-	"user-service/internal/domain"
-	"user-service/internal/usecase"
 )
 
 type srv struct {
@@ -17,7 +18,7 @@ type srv struct {
 
 func NewServer(uc usecase.UserUC) *grpc.Server {
 	s := grpc.NewServer()
-	userpb.RegisterUserServiceServer(s, &srv{uc})
+	userpb.RegisterUserServiceServer(s, &srv{uc: uc})
 	return s
 }
 
@@ -29,6 +30,7 @@ func (s *srv) RegisterUser(ctx context.Context, r *userpb.UserRequest) (*userpb.
 	}
 	return &userpb.UserResponse{User: toProto(u)}, nil
 }
+
 func (s *srv) AuthenticateUser(ctx context.Context, r *userpb.AuthRequest) (*userpb.AuthResponse, error) {
 	token, err := s.uc.Auth(ctx, r.Username, r.Password)
 	if err != nil {
@@ -36,6 +38,7 @@ func (s *srv) AuthenticateUser(ctx context.Context, r *userpb.AuthRequest) (*use
 	}
 	return &userpb.AuthResponse{Token: token}, nil
 }
+
 func (s *srv) GetUserProfile(ctx context.Context, id *userpb.UserID) (*userpb.UserResponse, error) {
 	u, err := s.uc.GetProfile(ctx, id.Id)
 	if err != nil {
@@ -43,6 +46,7 @@ func (s *srv) GetUserProfile(ctx context.Context, id *userpb.UserID) (*userpb.Us
 	}
 	return &userpb.UserResponse{User: toProto(u)}, nil
 }
+
 func toProto(u *domain.User) *userpb.User {
 	return &userpb.User{Id: u.ID, Username: u.Username, Email: u.Email}
 }

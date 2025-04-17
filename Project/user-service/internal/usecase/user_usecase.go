@@ -3,8 +3,8 @@ package usecase
 import (
 	"context"
 	"errors"
+	"github.com/quemin2402/user-service/internal/domain"
 	"golang.org/x/crypto/bcrypt"
-	"user-service/internal/domain"
 )
 
 type UserUC interface {
@@ -15,7 +15,9 @@ type UserUC interface {
 
 type uc struct{ repo domain.UserRepository }
 
-func New(r domain.UserRepository) UserUC { return &uc{r} }
+func New(r domain.UserRepository) UserUC {
+	return &uc{r}
+}
 
 func (u *uc) Register(ctx context.Context, usr *domain.User, raw string) (*domain.User, error) {
 	if usr.Username == "" || raw == "" {
